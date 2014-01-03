@@ -5,7 +5,10 @@ microflo = require '../microflo.js'
 serialport = require 'serialport'
 
 # IDEA: implement the subscribeSubgraph protocol that NoFlo uses,
-# to allow introspecting the MicroFlo subgraph
+# to allow introspecting the MicroFlo subgraph?
+
+# FIXME: register exported ports dynamically
+# only send/recevie from them
 
 class MicroFloComponent extends noflo.Component
     constructor: ->

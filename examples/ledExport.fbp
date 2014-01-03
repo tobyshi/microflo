@@ -1,0 +1,7 @@
+# Example of how MicroFlo graphs can export ports
+# and be available as a component in a NoFlo graph
+EXPORT=TOGGLE.OUT:IN
+EXPORT=LED.OUT:OUT
+
+IN toggle(ToggleBoolean) OUT -> IN led(DigitalWrite)
+'13' -> PIN led()

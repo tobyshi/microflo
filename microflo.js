@@ -233,6 +233,38 @@ var findPort = function(componentLib, graph, nodeName, portName) {
     return { isOutput: isOutput, port: port};
 }
 
+// FIXME: need to pass in appropriate argumente
+var cmdStreamBuildSubGraph = function() {
+    index += writeCmd(buffer, index, cmdFormat.commands.CreateComponent.id,
+                      componentLib.getComponent("SubGraph").id)
+    nodeMap[nodeName] = {id: currentNodeId++};
+
+    var subgraph = comp.graph;
+    subgraph.nodeMap = nodeMap;
+    graph.processes[nodeName].graph = subgraph;
+    var r = cmdStreamBuildGraph(currentNodeId, buffer, index, componentLib, subgraph, nodeName);
+    index += r.index;
+    currentNodeId = r.nodeId;
+
+    for (var i=0; i<subgraph.exports.length; i++) {
+        var c = subgraph.exports[i];
+        var tok = c.private.split(".");
+        if (tok.length != 2) {
+            throw "Invalid export definition"
+        }
+
+        var childNode = nodeMap[tok[0]];
+        var childPort = findPort(componentLib, subgraph, tok[0], tok[1]);
+        var subgraphNode = nodeMap[nodeName];
+        var subgraphPort = componentLib.inputPort(graph.processes[nodeName].component, c.public);
+        console.log("connect subgraph", childNode, childPort);
+        index += writeCmd(buffer, index, cmdFormat.commands.ConnectSubgraphPort.id,
+                          childPort.isOutPort ? 0 : 1, subgraphNode.id, subgraphPort.id,
+                          childNode.id, childPort.port.id);
+    }
+    return index;
+}
+
 var cmdStreamBuildGraph = function(currentNodeId, buffer, index, componentLib, graph, parent) {
 
     var nodeMap = graph.nodeMap;
@@ -248,33 +280,7 @@ var cmdStreamBuildGraph = function(currentNodeId, buffer, index, componentLib, g
         var comp = componentLib.getComponent(process.component);
         if (comp.graph || comp.graphFile) {
             // Inject subgraph
-            index += writeCmd(buffer, index, cmdFormat.commands.CreateComponent.id,
-                              componentLib.getComponent("SubGraph").id)
-            nodeMap[nodeName] = {id: currentNodeId++};
-
-            var subgraph = comp.graph;
-            subgraph.nodeMap = nodeMap;
-            graph.processes[nodeName].graph = subgraph;
-            var r = cmdStreamBuildGraph(currentNodeId, buffer, index, componentLib, subgraph, nodeName);
-            index += r.index;
-            currentNodeId = r.nodeId;
-
-            for (var i=0; i<subgraph.exports.length; i++) {
-                var c = subgraph.exports[i];
-                var tok = c.private.split(".");
-                if (tok.length != 2) {
-                    throw "Invalid export definition"
-                }
-
-                var childNode = nodeMap[tok[0]];
-                var childPort = findPort(componentLib, subgraph, tok[0], tok[1]);
-                var subgraphNode = nodeMap[nodeName];
-                var subgraphPort = componentLib.inputPort(graph.processes[nodeName].component, c.public);
-                console.log("connect subgraph", childNode, childPort);
-                index += writeCmd(buffer, index, cmdFormat.commands.ConnectSubgraphPort.id,
-                                  childPort.isOutPort ? 0 : 1, subgraphNode.id, subgraphPort.id,
-                                  childNode.id, childPort.port.id);
-            }
+            cmdStreamBuildSubGraph();
 
         } else {
             // Add normal component
@@ -355,9 +361,15 @@ var cmdStreamFromGraph = function(componentLib, graph, debugLevel) {
                       cmdFormat.debugLevels[debugLevel].id);
 
     // Actual graph
-    var r = cmdStreamBuildGraph(currentNodeId, buffer, index, componentLib, graph);
-    index += r.index;
-    currentNodeId = r.nodeId;
+    if (graph.exports) {
+        // Use a top-level subgraph node, to expose exported ports to host
+        console.log(graph.exports);
+        cmdStreamBuildSubGraph()
+    } else {
+        var r = cmdStreamBuildGraph(currentNodeId, buffer, index, componentLib, graph);
+        index += r.index;
+        currentNodeId = r.nodeId;
+    }
 
     // Mark end of commands
     index += writeCmd(buffer, index, cmdFormat.commands.End.id);
