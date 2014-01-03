@@ -33,6 +33,7 @@
         "mocha": "~1.13.0"
     },
     "noflo": {
+      "loader": "nodejs/ComponentLoader",
       "components": {
             "MicroFloComponent": "nodejs/MicroFloComponent"
       }

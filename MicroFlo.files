@@ -6,6 +6,7 @@ examples/monitorPin.fbp
 examples/readbutton.fbp
 examples/capasitivePin.fbp
 examples/max7219.fbp
+examples/ledExport.fbp
 microflo/arduino.hpp
 microflo/commandformat.h
 microflo/commandformat.json
