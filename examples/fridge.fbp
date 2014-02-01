@@ -12,10 +12,10 @@ turnOff() OUT -> IN id(InvertBoolean) OUT -> MONITOR2 switch()
 
 # Config
 '5000' -> INTERVAL timer() # milliseconds
-'true' -> ENABLE timer
 '4' -> LOWTHRESHOLD hysteresis() # Celcius
 '5' -> HIGHTHRESHOLD hysteresis() # Celcius
 '["0x28", "0xAF", "0x1C", "0xB2", "0x04", "0x00", "0x00", "0x33"]' -> ADDRESS thermometer()
+0x28, 0x2E, 0x03, 0xC4, 0x04, 0x00, 0x00, 0x5C
 board(ArduinoUno) PIN9 -> PIN thermometer()
 board() PIN12 -> PIN turnOff()
 board() PIN11 -> PIN turnOn()

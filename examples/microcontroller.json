@@ -1,0 +1,156 @@
+{
+    "id": "3tj9x",
+    "project": "",
+    "properties": {
+        "name": "Fridge",
+        "environment": {
+            "runtime": "websocket",
+            "wsUrl": "ws://localhost:3569"
+        }
+    },
+    "exports": [],
+    "groups": [],
+    "processes": {
+        "ReadDallasTemperature_gln7m": {
+            "component": "ReadDallasTemperature",
+            "metadata": {
+                "x": 432,
+                "y": 180,
+                "label": "ReadDallasTemperature"
+            },
+            "name": "ReadDallasTemperature_gln7m"
+        },
+        "Timer_3key5": {
+            "component": "Timer",
+            "metadata": {
+                "x": 288,
+                "y": 216,
+                "label": "Timer"
+            },
+            "name": "Timer_3key5"
+        },
+        "HysteresisLatch_ebgfz": {
+            "component": "HysteresisLatch",
+            "metadata": {
+                "x": 576,
+                "y": 216,
+                "label": "HysteresisLatch"
+            },
+            "name": "HysteresisLatch_ebgfz"
+        },
+        "DigitalWrite_q0uuy": {
+            "component": "DigitalWrite",
+            "metadata": {
+                "x": 828,
+                "y": 288,
+                "label": "DigitalWrite"
+            },
+            "name": "DigitalWrite_q0uuy"
+        },
+        "InvertBoolean_g64q3": {
+            "component": "InvertBoolean",
+            "metadata": {
+                "x": 684,
+                "y": 252,
+                "label": "InvertBoolean"
+            },
+            "name": "InvertBoolean_g64q3"
+        }
+    },
+    "connections": [
+        {
+            "src": {
+                "process": "Timer_3key5",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "ReadDallasTemperature_gln7m",
+                "port": "trigger"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "HysteresisLatch_ebgfz",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "InvertBoolean_g64q3",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "InvertBoolean_g64q3",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "DigitalWrite_q0uuy",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "ReadDallasTemperature_gln7m",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "HysteresisLatch_ebgfz",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "data": "11",
+            "tgt": {
+                "process": "ReadDallasTemperature_gln7m",
+                "port": "pin"
+            }
+        },
+        {
+            "data": "1000",
+            "tgt": {
+                "process": "Timer_3key5",
+                "port": "interval"
+            }
+        },
+        {
+            "data": "27",
+            "tgt": {
+                "process": "HysteresisLatch_ebgfz",
+                "port": "lowthreshold"
+            }
+        },
+        {
+            "data": "28",
+            "tgt": {
+                "process": "HysteresisLatch_ebgfz",
+                "port": "highthreshold"
+            }
+        },
+        {
+            "data": "10",
+            "tgt": {
+                "process": "DigitalWrite_q0uuy",
+                "port": "pin"
+            }
+        },
+        {
+            "data": "[\"0x28\", \"0x2E\", \"0x03\", \"0xC4\", \"0x04\", \"0x00\", \"0x00\", \"0x5C\"]",
+            "tgt": {
+                "process": "ReadDallasTemperature_gln7m",
+                "port": "address"
+            }
+        }
+    ]
+} 

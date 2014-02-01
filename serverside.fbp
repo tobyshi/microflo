@@ -1,0 +1,32 @@
+
+# HTTP server
+'3334' -> DATA k(core/Kick) OUT -> LISTEN server(webserver/Server)
+server LISTENING -> IN outA(core/Output)
+server ERROR -> IN outA
+server REQUEST -> IN outA
+'in' -> IN k
+
+# WebSocket
+listenWebsocket(websocket/ListenConnections) CONNECTION -> IN splitConn(core/Split)
+splitConn OUT -> CONNECTION receiveWebsocket(websocket/ListenMessages)
+splitConn OUT -> CONNECTION sendWebsocket(websocket/SendMessage)
+server SERVER -> SERVER listenWebsocket
+# TODO: send real data across
+# TODO: hook up microcontroller
+splitReceive(core/Split) OUT -> IN outA(core/Output)
+receiveWebsocket STRING -> IN splitReceive
+
+# Debug
+# splitReceive OUT -> STRING sendWebsocket
+
+# Microcontroller
+'/dev/ttyUSB1' -> DEVICENAME temp(MicroFloComponent)
+'examples/microcontroller.json' -> GRAPH temp
+temp OUT -> IN splitTemp(core/Split)
+splitTemp OUT -> IN outB(core/Output)
+splitTemp OUT -> IN log(filesystem/AppendFile)
+splitTemp OUT -> STRING sendWebsocket
+
+# Logfile
+'temperatures.log' -> FILENAME log
+log OUT -> IN drop(core/Drop)

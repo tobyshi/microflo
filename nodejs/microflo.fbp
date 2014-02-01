@@ -1,8 +1,13 @@
 
-'/dev/ttyUSB1' -> DEVICENAME comp(MicroFloComponent)
-'examples/ledExport.fbp' -> GRAPH comp
-comp OUT -> IN out(core/Output)
-'300' -> INTERVAL timer(core/RunInterval) OUT -> IN splitTimer(core/Split)
-splitTimer OUT -> IN out(core/Output)
-splitTimer OUT -> IN comp
-'' -> START timer
+'/dev/ttyUSB1' -> DEVICENAME temp(MicroFloComponent)
+'examples/microcontroller.json' -> GRAPH temp
+temp OUT -> IN splitTemp(core/Split)
+splitTemp OUT -> IN out(core/Output)
+splitTemp OUT -> IN log(filesystem/AppendFile)
+'temperatures.log' -> FILENAME log
+log OUT -> IN out(core/Output)
+
+#'3000' -> INTERVAL timer(core/RunInterval) OUT -> IN splitTimer(core/Split)
+#splitTimer OUT -> IN out(core/Output)
+#splitTimer OUT -> IN comp
+#'' -> START timer

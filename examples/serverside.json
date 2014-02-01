@@ -1,0 +1,325 @@
+{
+    "id": "lfaw4",
+    "project": "",
+    "properties": {
+        "name": "Serverside4",
+        "environment": {
+            "runtime": "websocket",
+            "wsUrl": "ws://localhost:3888"
+        }
+    },
+    "exports": [],
+    "groups": [],
+    "processes": {
+        "core/Kick_g4ax4": {
+            "component": "core/Kick",
+            "metadata": {
+                "x": 144,
+                "y": 108,
+                "label": "core/Kick"
+            },
+            "name": "core/Kick_g4ax4"
+        },
+        "webserver/Server_8g220": {
+            "component": "webserver/Server",
+            "metadata": {
+                "x": 288,
+                "y": 108,
+                "label": "webserver/Server"
+            },
+            "name": "webserver/Server_8g220"
+        },
+        "websocket/ListenConnections_zxj2": {
+            "component": "websocket/ListenConnections",
+            "metadata": {
+                "x": 468,
+                "y": 108,
+                "label": "websocket/ListenConnections"
+            },
+            "name": "websocket/ListenConnections_zxj2"
+        },
+        "websocket/ListenMessages_jt7m2": {
+            "component": "websocket/ListenMessages",
+            "metadata": {
+                "x": 792,
+                "y": 0,
+                "label": "websocket/ListenMessages"
+            },
+            "name": "websocket/ListenMessages_jt7m2"
+        },
+        "websocket/SendMessage_efje": {
+            "component": "websocket/SendMessage",
+            "metadata": {
+                "x": 792,
+                "y": 252,
+                "label": "websocket/SendMessage"
+            },
+            "name": "websocket/SendMessage_efje"
+        },
+        "core/Split_uwkkw": {
+            "component": "core/Split",
+            "metadata": {
+                "x": 612,
+                "y": 108,
+                "label": "core/Split"
+            },
+            "name": "core/Split_uwkkw"
+        },
+        "microflo/MicroFloComponent_yyj78": {
+            "component": "microflo/MicroFloComponent",
+            "metadata": {
+                "x": 396,
+                "y": 360,
+                "label": "microflo/MicroFloComponent"
+            },
+            "name": "microflo/MicroFloComponent_yyj78"
+        },
+        "core/Split_1nuc2": {
+            "component": "core/Split",
+            "metadata": {
+                "x": 576,
+                "y": 360,
+                "label": "core/Split"
+            },
+            "name": "core/Split_1nuc2"
+        },
+        "filesystem/AppendFile_nbugq": {
+            "component": "filesystem/AppendFile",
+            "metadata": {
+                "x": 756,
+                "y": 432,
+                "label": "filesystem/AppendFile"
+            },
+            "name": "filesystem/AppendFile_nbugq"
+        },
+        "core/Drop_3hnod": {
+            "component": "core/Drop",
+            "metadata": {
+                "x": 900,
+                "y": 432,
+                "label": "core/Drop"
+            },
+            "name": "core/Drop_3hnod"
+        },
+        "core/Output_gyeqw": {
+            "component": "core/Output",
+            "metadata": {
+                "x": 972,
+                "y": 0,
+                "label": "core/Output"
+            },
+            "name": "core/Output_gyeqw"
+        },
+        "core/Drop_amqyx": {
+            "component": "core/Drop",
+            "metadata": {
+                "x": 324,
+                "y": 252,
+                "label": "core/Drop"
+            },
+            "name": "core/Drop_amqyx"
+        },
+        "core/Drop_lq2b0": {
+            "component": "core/Drop",
+            "metadata": {
+                "x": 216,
+                "y": 252,
+                "label": "core/Drop"
+            },
+            "name": "core/Drop_lq2b0"
+        }
+    },
+    "connections": [
+        {
+            "src": {
+                "process": "webserver/Server_8g220",
+                "port": "server"
+            },
+            "tgt": {
+                "process": "websocket/ListenConnections_zxj2",
+                "port": "server"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "websocket/ListenConnections_zxj2",
+                "port": "connection"
+            },
+            "tgt": {
+                "process": "core/Split_uwkkw",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "core/Split_uwkkw",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "websocket/ListenMessages_jt7m2",
+                "port": "connection"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "core/Split_uwkkw",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "websocket/SendMessage_efje",
+                "port": "connection"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "core/Kick_g4ax4",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "webserver/Server_8g220",
+                "port": "listen"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "microflo/MicroFloComponent_yyj78",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "core/Split_1nuc2",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "core/Split_1nuc2",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "filesystem/AppendFile_nbugq",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "filesystem/AppendFile_nbugq",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "core/Drop_3hnod",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "core/Split_1nuc2",
+                "port": "out"
+            },
+            "tgt": {
+                "process": "websocket/SendMessage_efje",
+                "port": "string"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "websocket/ListenMessages_jt7m2",
+                "port": "string"
+            },
+            "tgt": {
+                "process": "core/Output_gyeqw",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "webserver/Server_8g220",
+                "port": "request"
+            },
+            "tgt": {
+                "process": "core/Drop_amqyx",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "src": {
+                "process": "webserver/Server_8g220",
+                "port": "listening"
+            },
+            "tgt": {
+                "process": "core/Drop_lq2b0",
+                "port": "in"
+            },
+            "metadata": {
+                "route": 0
+            }
+        },
+        {
+            "data": "3334",
+            "tgt": {
+                "process": "core/Kick_g4ax4",
+                "port": "data"
+            }
+        },
+        {
+            "data": "j",
+            "tgt": {
+                "process": "core/Kick_g4ax4",
+                "port": "in"
+            }
+        },
+        {
+            "data": "/dev/ttyUSB1",
+            "tgt": {
+                "process": "microflo/MicroFloComponent_yyj78",
+                "port": "devicename"
+            }
+        },
+        {
+            "data": "examples/microcontroller.json",
+            "tgt": {
+                "process": "microflo/MicroFloComponent_yyj78",
+                "port": "graph"
+            }
+        },
+        {
+            "data": "temperature.log",
+            "tgt": {
+                "process": "filesystem/AppendFile_nbugq",
+                "port": "filename"
+            }
+        }
+    ]
+} 
