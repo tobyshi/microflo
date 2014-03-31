@@ -96,6 +96,12 @@ build-linux: install
 	node microflo.js generate $(LINUX_GRAPH) build/linux/main.cpp linux
 	cd build/linux && g++ -o firmware main.cpp -std=c++0x -I../../microflo -DLINUX -Wall -Werror -lrt
 
+build-emscripten: install
+	rm -rf build/emscripten
+	mkdir -p build/emscripten
+	node microflo.js generate $(LINUX_GRAPH) build/emscripten/main.cpp emscripten
+	cd build/emscripten && emcc -o microflo-runtime.js main.cpp -I../../microflo -Wall -Werror
+
 build: build-arduino build-avr
 
 upload: build-arduino
@@ -139,8 +145,12 @@ release-app:
 	grunt build
 
 release-stellaris: build-stellaris
+    # TODO: package?
 
-release: install build release-mbed release-linux release-microflo release-arduino release-stellaris release-app
+release-emscripten: build-emscripten
+    # TODO: package?
+
+release: install build release-mbed release-linux release-microflo release-arduino release-stellaris release-app release-emscripten
 	rm -rf build/microflo-$(VERSION)
 	mkdir -p build/microflo-$(VERSION)
 	cp -r build/microflo-arduino.zip build/microflo-$(VERSION)/
